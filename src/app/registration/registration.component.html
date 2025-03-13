@@ -1,0 +1,123 @@
+<div class="container">
+    <div class="tabs">
+      <button 
+        [class.active]="activeTab === 'register'" 
+        (click)="setActiveTab('register')">
+        Register
+      </button>
+      <button 
+        [class.active]="activeTab === 'search'" 
+        (click)="setActiveTab('search')">
+        Search
+      </button>
+    </div>
+  
+    <div class="card" *ngIf="activeTab === 'register'">
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name" formControlName="name" type="text" class="form-control">
+            <div class="error" *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched">
+              Name is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="nrc">NRC</label>
+            <input id="nrc" formControlName="nrc" type="text" class="form-control">
+            <div class="error" *ngIf="registrationForm.get('nrc')?.invalid && registrationForm.get('nrc')?.touched">
+              NRC is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="dob">DOB</label>
+            <input id="dob" formControlName="dob" type="date" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label for="fatherName">F Name</label>
+            <input id="fatherName" formControlName="fatherName" type="text" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input id="phone" formControlName="phone" type="text" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" formControlName="email" type="email" class="form-control">
+            <div class="error" *ngIf="registrationForm.get('email')?.errors?.['email'] && registrationForm.get('email')?.touched">
+              Please enter a valid email
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="township">Township</label>
+            <select id="township" formControlName="township" class="form-control">
+              <option value="">Select township</option>
+              <option *ngFor="let township of townships" [value]="township">
+                {{ township }}
+              </option>
+            </select>
+          </div>
+  
+          <div class="form-group full-width">
+            <label for="address">Address</label>
+            <textarea id="address" formControlName="address" rows="3" class="form-control"></textarea>
+          </div>
+        </div>
+  
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Save/Update</button>
+          <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
+          <button type="button" class="btn btn-secondary" (click)="onList()">List</button>
+        </div>
+      </form>
+    </div>
+  
+    <div class="card" *ngIf="activeTab === 'search'">
+      <div class="search-container">
+        <div class="search-input">
+          <label for="search">Search</label>
+          <input id="search" [(ngModel)]="searchQuery" placeholder="ID/Name" class="form-control">
+        </div>
+        <button class="btn btn-primary" (click)="onSearch()">
+          Go <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+  
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>SID</th>
+              <th>Name</th>
+              <th>NRC</th>
+              <th>Phone</th>
+              <th>F Name</th>
+              <th>DOB</th>
+              <th>Township</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let person of people" (click)="onRowClick(person)" class="clickable">
+              <td>{{ person.id }}</td>
+              <td>{{ person.name }}</td>
+              <td>{{ person.nrc }}</td>
+              <td>{{ person.phone }}</td>
+              <td>{{ person.fatherName }}</td>
+              <td>{{ person.dob }}</td>
+              <td>{{ person.township }}</td>
+              <td>{{ person.address }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  
