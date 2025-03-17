@@ -1,111 +1,215 @@
 <div class="container">
-    <div class="tabs">
-      <button 
-        [class.active]="activeTab === 'register'" 
-        (click)="setActiveTab('register')">
-        Register
-      </button>
-      <button 
-        [class.active]="activeTab === 'search'" 
-        (click)="setActiveTab('search')">
-        Search
-      </button>
-    </div>
-  
-    <div class="card" *ngIf="activeTab === 'register'">
-      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input id="name" formControlName="name" type="text" class="form-control">
-            <div class="error" *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched">
-              Name is required
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label for="nrc">NRC</label>
-            <input id="nrc" formControlName="nrc" type="text" class="form-control">
-            <div class="error" *ngIf="registrationForm.get('nrc')?.invalid && registrationForm.get('nrc')?.touched">
-              NRC is required
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label for="dob">DOB</label>
-            <input id="dob" formControlName="dob" type="date" class="form-control">
-          </div>
-  
-          <div class="form-group">
-            <label for="fatherName">F Name</label>
-            <input id="fatherName" formControlName="fatherName" type="text" class="form-control">
-          </div>
-  
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input id="phone" formControlName="phone" type="text" class="form-control">
-          </div>
-  
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input id="email" formControlName="email" type="email" class="form-control">
-            <div class="error" *ngIf="registrationForm.get('email')?.errors?.['email'] && registrationForm.get('email')?.touched">
-              Please enter a valid email
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label for="township">Township</label>
-            <select id="township" formControlName="township" class="form-control">
-              <option value="">Select township</option>
-              <option *ngFor="let township of townships" [value]="township">
-                {{ township }}
-              </option>
-            </select>
-          </div>
-  
-          <div class="form-group full-width">
-            <label for="address">Address</label>
-            <textarea id="address" formControlName="address" rows="3" class="form-control"></textarea>
+  <div class="header">
+    <h1>Registration System</h1>
+    <button class="btn btn-outline" (click)="navigateToExcel()">
+      Excel Import/Export
+    </button>
+  </div>
+
+  <div class="tabs">
+    <button 
+      [class.active]="activeTab === 'register'" 
+      (click)="setActiveTab('register')">
+      Register
+    </button>
+    <button 
+      [class.active]="activeTab === 'search'" 
+      (click)="setActiveTab('search')">
+      Search
+    </button>
+  </div>
+
+  <div class="card" *ngIf="activeTab === 'register'">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <!-- Hidden ID field -->
+      <input type="hidden" formControlName="id">
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Name <span class="required">*</span></label>
+          <input 
+            id="name" 
+            formControlName="name" 
+            type="text" 
+            class="form-control" 
+            [class.invalid]="isFieldInvalid('name')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('name')">
+            {{ getErrorMessage('name') }}
           </div>
         </div>
-  
-        <div class="button-group">
-          <button type="submit" class="btn btn-primary">Save/Update</button>
-          <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
-          <button type="button" class="btn btn-secondary" (click)="onList()">List</button>
+
+        <div class="form-group">
+          <label for="nrc">NRC <span class="required">*</span></label>
+          <input 
+            id="nrc" 
+            formControlName="nrc" 
+            type="text" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('nrc')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('nrc')">
+            {{ getErrorMessage('nrc') }}
+          </div>
         </div>
-      </form>
-    </div>
-  
-    <div class="card" *ngIf="activeTab === 'search'">
-      <div class="search-container">
-        <div class="search-input">
-          <label for="search">Search</label>
-          <input id="search" [(ngModel)]="searchQuery" placeholder="ID/Name" class="form-control">
+
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input 
+            id="dob" 
+            formControlName="dob" 
+            type="date" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('dob')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('dob')">
+            {{ getErrorMessage('dob') }}
+          </div>
         </div>
-        <button class="btn btn-primary" (click)="onSearch()">
-          Go <i class="fa fa-arrow-right"></i>
+
+        <div class="form-group">
+          <label for="fatherName">Father's Name</label>
+          <input 
+            id="fatherName" 
+            formControlName="fatherName" 
+            type="text" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('fatherName')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('fatherName')">
+            {{ getErrorMessage('fatherName') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input 
+            id="phone" 
+            formControlName="phone" 
+            type="text" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('phone')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('phone')">
+            {{ getErrorMessage('phone') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            id="email" 
+            formControlName="email" 
+            type="email" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('email')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('email')">
+            {{ getErrorMessage('email') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="township">Township</label>
+          <select 
+            id="township" 
+            formControlName="township" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('township')"
+          >
+            <option value="">Select township</option>
+            <option *ngFor="let township of townships" [value]="township">
+              {{ township }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('township')">
+            {{ getErrorMessage('township') }}
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="address">Address</label>
+          <textarea 
+            id="address" 
+            formControlName="address" 
+            rows="3" 
+            class="form-control"
+            [class.invalid]="isFieldInvalid('address')"
+          ></textarea>
+          <div class="error-message" *ngIf="isFieldInvalid('address')">
+            {{ getErrorMessage('address') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="error-alert" *ngIf="submitError">
+        {{ submitError }}
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+          {{ isLoading ? 'Saving...' : (registrationForm.get('id')?.value ? 'Update' : 'Save') }}
+        </button>
+        <button type="button" class="btn btn-danger" (click)="onDelete()" [disabled]="isLoading || !registrationForm.get('id')?.value">
+          {{ isLoading ? 'Deleting...' : 'Delete' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()" [disabled]="isLoading">
+          Clear
+        </button>
+        <button type="button" class="btn btn-outline" (click)="onList()" [disabled]="isLoading">
+          List All
         </button>
       </div>
-  
-      <div class="table-container">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>SID</th>
-              <th>Name</th>
-              <th>NRC</th>
-              <th>Phone</th>
-              <th>F Name</th>
-              <th>DOB</th>
-              <th>Township</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let person of people" (click)="onRowClick(person)" class="clickable">
-              <td>{{ person.id }}</td>
+    </form>
+  </div>
+
+  <div class="card" *ngIf="activeTab === 'search'">
+    <div class="search-container">
+      <div class="search-input">
+        <label for="search">Search</label>
+        <input 
+          id="search" 
+          [(ngModel)]="searchQuery" 
+          placeholder="ID/Name" 
+          class="form-control"
+        >
+      </div>
+      <button class="btn btn-primary" (click)="onSearch()" [disabled]="isLoading">
+        {{ isLoading ? 'Searching...' : 'Search' }}
+      </button>
+    </div>
+
+    <div class="error-alert" *ngIf="searchError">
+      {{ searchError }}
+    </div>
+
+    <div class="loading-indicator" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading data...</p>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading">
+      <div class="empty-state" *ngIf="people.length === 0">
+        <p>No records found</p>
+      </div>
+      
+      <table class="table" *ngIf="people.length > 0">
+        <thead>
+          <tr>
+            <th>SID</th>
+            <th>Name</th>
+            <th>NRC</th>
+            <th>Phone</th>
+            <th>F Name</th>
+            <th>DOB</th>
+            <th>Township</th>
+            <th>Address</th>
+             <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let person of people" (click)="onRowClick(person)" class="clickable">
+            <td>{{ person.id }}</td>
               <td>{{ person.name }}</td>
               <td>{{ person.nrc }}</td>
               <td>{{ person.phone }}</td>
@@ -113,11 +217,20 @@
               <td>{{ person.dob }}</td>
               <td>{{ person.township }}</td>
               <td>{{ person.address }}</td>
-            </tr>
-          </tbody>
-        </table>
+               <td>
+              <button 
+                class="btn btn-sm btn-primary" 
+                (click)="onRowClick(person)"
+                title="Edit this record"
+              >
+                Edit
+              </button>
+        </tbody>
+      </table>
+      
+      <div class="table-footer" *ngIf="people.length > 0">
+        <p>Total records: {{ people.length }}</p>
       </div>
     </div>
   </div>
-  
-  
+</div>

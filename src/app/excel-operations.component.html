@@ -1,0 +1,66 @@
+<div class="excel-container">
+  <div class="header-with-back">
+    <h2>Excel Import/Export</h2>
+    <button class="btn btn-back" (click)="goBack()">
+      Back <i class="fa fa-arrow-right"></i>
+    </button>
+  </div>
+  
+  <div class="card">
+    <div class="card-section">
+      <h3>Import from Excel</h3>
+      <p>Upload an Excel file (.xlsx or .xls) to import person records.</p>
+      
+      <div class="file-upload">
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".xlsx, .xls" />
+        <button class="btn btn-primary" (click)="importExcel()" [disabled]="!selectedFile || isLoading">
+          {{ isLoading ? 'Importing...' : 'Import' }}
+        </button>
+        <button class="btn btn-secondary" (click)="downloadTemplate()">Download Template</button>
+      </div>
+      
+      <div *ngIf="importResult.message" class="alert" [ngClass]="{'alert-success': importResult.success, 'alert-danger': !importResult.success}">
+        {{ importResult.message }}
+      </div>
+      
+      <div *ngIf="importResult.people && importResult.people.length > 0" class="import-results">
+        <h4>Imported Records</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>SID</th>
+              <th>Name</th>
+              <th>NRC</th>
+              <th>Phone</th>
+              <th>F Name</th>
+              <th>DOB</th>
+              <th>Township</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let person of importResult.people">
+              <td>{{ person.id }}</td>
+              <td>{{ person.name }}</td>
+              <td>{{ person.nrc }}</td>
+              <td>{{ person.phone }}</td>
+              <td>{{ person.fatherName }}</td>
+              <td>{{ person.dob }}</td>
+              <td>{{ person.township }}</td>
+              <td>{{ person.address }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="card-section">
+      <h3>Export to Excel</h3>
+      <p>Download all person records as an Excel file.</p>
+      
+      <button class="btn btn-success" (click)="exportExcel()" [disabled]="isLoading">
+        {{ isLoading ? 'Exporting...' : 'Export to Excel' }}
+      </button>
+    </div>
+  </div>
+</div>

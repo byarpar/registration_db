@@ -8,8 +8,22 @@ import { Person } from '../models/person.model';
 })
 export class PersonService {
   private apiUrl = 'http://localhost:8080/api/people';
+  private excelApiUrl = 'http://localhost:8080/api/excel';
 
   constructor(private http: HttpClient) { }
+
+  exportToExcel(): Observable<Blob> {
+    return this.http.get(`${this.excelApiUrl}/export`, {
+      responseType: 'blob'
+    });
+  }
+
+  importFromExcel(file: File): Observable<Person[]> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<Person[]>(`${this.excelApiUrl}/import`, formData);
+  }
 
   getAllPeople(): Observable<Person[]> {
     return this.http.get<Person[]>(this.apiUrl);
